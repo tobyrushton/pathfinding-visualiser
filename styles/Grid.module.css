@@ -1,0 +1,19 @@
+.gridItem{ 
+    position: absolute;
+    width: 5rem;
+    height: 5rem;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    cursor: pointer;
+}
+
+.grid{
+    position: absolute;
+    left: 50%;
+    top:calc(50% + 2.5rem);
+    transform: translate(-50%,-50%);
+    display: grid;
+    grid-template-columns: repeat(20, 80px);
+    grid-template-rows: repeat(10,80px);
+}
