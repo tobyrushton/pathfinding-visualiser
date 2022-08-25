@@ -7,9 +7,9 @@ class graphNode{
     target:boolean = false
     start:boolean = false
     links:vertices
-    cellID:number
+    cellID:string
 
-    constructor(links:vertices, ID:number){
+    constructor(links:vertices, ID:string){
         this.links=links
         this.cellID = ID
     }
@@ -21,29 +21,42 @@ class graphNode{
 }
 
 class graph{
-    graph: Map<number, graphNode> = new Map()
+    graph: Map<string, graphNode> = new Map()
+    start:string = ''
+    target:string = ''
 
-    addNode = (ID:number):void => {
-        const vertices:vertices = calculateVertices(ID)
+    addNode = (ID:string):void => {
+        const vertices:vertices = this.calculateVertices(ID)
         const node = new graphNode(vertices,ID)
         this.graph.set(ID, node)
     }
+
+    private calculateVertices = (ID:string):vertices => {
+
+        //temp function with return type
+        //will be improved when the method to create the graph is created.
+        return [
+
+        ]
+    }
+
+    createGraph = ():void => {
+        for(let i = 0; i<10;i++)
+            for(let j = 0; j<20; j++)
+                this.addNode(i.toString().concat(j.toString()))
+    }
+
+    getNode = (ID:string):graphNode | undefined => this.graph.get(ID)
+    setStart = (ID:string, change:boolean):void => {
+        this.graph.get(ID)?.setStart(change)
+        this.start = ID
+    }
+    setTarget = (ID:string, change:boolean):void => {
+        this.graph.get(ID)?.setTarget(change)
+        this.target = ID
+    }
+
+
 }
 
-export const calculateVertices = (ID:number):vertices => {
-
-    //temp function with return type
-    //will be improved when the method to create the graph is created.
-    return [
-        {
-            linkTo: ID-1,
-            weight:0
-        },
-        {
-            linkTo:ID+1,
-            weight:0
-        }
-    ]
-}
-
-export default {}
+export default graph
