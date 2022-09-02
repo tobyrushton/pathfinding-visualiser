@@ -1,19 +1,34 @@
 import React, { useState, useEffect, useCallback } from "react"
 import styles from '../styles/grid.module.css'
-import { GridItemProps } from "../types/grid"
+import { GridItemProps, colours } from "../types/grid"
 import graph from '../domain/data_structures/graph'
 
-const GridItem: React.FC<GridItemProps> = ({ row, column, colour }) => {
+const GridItem: React.FC<GridItemProps> = ({ row, column, ID, details:{start, target}, setStart, setTarget, forceRender }) => {
+    const [colour , setColour ] = useState<colours>('white')
+
     return (
         <div 
-            id={row.toString().concat(column.toString())}
+            id={ID} 
             className={styles.gridItem}
             style={{
                 gridRow:(row+1).toString(),
                 gridColumn: (column+1).toString() + ' / ' + (column+1).toString(),
                 backgroundColor:colour
             }}
-            onClick={()=> console.log(colour)}
+            onClick={() => {
+                console.log(start)
+                if(start === '') {
+                    setStart(ID, true)
+                    setColour('black')
+                    forceRender()
+                }
+                else if(target === '') {
+                    setTarget(ID, true)
+                    setColour('red')
+                    forceRender()
+                }
+                else return
+            }}
         />
     )
 }
@@ -25,7 +40,7 @@ const Grid: React.FC = () => {
     const forceUpdate = useCallback(() => updateState({}), []);
 
     //temporary store of graph in Grid component state until proper state management is implemented.
-    const [ grid, setGrid ] = useState<graph>(new graph())
+    const [ grid ] = useState<graph>(new graph())
 
     useEffect(()=>{
         grid.createGraph()
@@ -40,24 +55,22 @@ const Grid: React.FC = () => {
                 Array.from(grid.graph.keys()).map(( ID ) =>
                     <GridItem 
                         key={'cell'.concat(ID)}
+                        ID={ID}
                         column={+ID.slice(1,3)}
                         row={+ID.slice(0,1)}
-                        colour={
-                            grid.getNode(ID)?.target ? 'red' :
-                            grid.getNode(ID)?.start ? 'black' : 'white'
-                        }
+                        details={{
+                            target: grid.target,
+                            start: grid.start
+                        }}
+                        setStart={grid.setStart}
+                        setTarget={grid.setTarget}
+                        forceRender={forceUpdate}
                     />
                 )
                 
             }
         </div>
     )
-}
-
-const changeColour = (ID:string, colour: string):void | null => {
-    const cell = document.getElementById(ID)
-    const cellStyle = cell?.style
-    cellStyle?.backgroundColor !== undefined ? cellStyle.backgroundColor = colour : null;
 }
 
 export default Grid
